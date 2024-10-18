@@ -2,6 +2,7 @@
 using Bloggie.Web.Models.Domain;
 using Bloggie.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bloggie.Web.Controllers;
 
@@ -21,7 +22,7 @@ public class AdminTagsController : Controller
     }
 
     [HttpPost]
-    public IActionResult Add(AddTagRequest addTagRequest)
+    public async Task<IActionResult> Add(AddTagRequest addTagRequest)
     {
 
         // Mapping AddTagRequest to TAg domain model
@@ -32,16 +33,16 @@ public class AdminTagsController : Controller
 
         };
 
-        _bloggieDbContext.Tags.Add(tag);
-        _bloggieDbContext.SaveChanges();
+        await _bloggieDbContext.Tags.AddAsync(tag);
+       await _bloggieDbContext.SaveChangesAsync();
 
         return RedirectToAction("List");
     }
 
     [HttpGet]
-    public IActionResult List()
+    public async Task<IActionResult> List()
     {
-        var tags = _bloggieDbContext.Tags.ToList();
+        var tags = await _bloggieDbContext.Tags.ToListAsync();
 
         return View(tags);
     }
@@ -49,9 +50,9 @@ public class AdminTagsController : Controller
 
 
     [HttpGet]
-    public IActionResult Edit(Guid id)
+    public async Task<IActionResult> Edit(Guid id)
     {
-        var tagfromDb = _bloggieDbContext.Tags.FirstOrDefault(t => t.Id == id);
+        var tagfromDb = await _bloggieDbContext.Tags.FirstOrDefaultAsync(t => t.Id == id);
 
 
         if (tagfromDb != null)
@@ -72,7 +73,7 @@ public class AdminTagsController : Controller
 
 
     [HttpPost]
-    public IActionResult Edit(EditTagRequest editTagRequest)
+    public async Task<IActionResult> Edit(EditTagRequest editTagRequest)
     {
 
         var tag = new Tag
@@ -82,14 +83,14 @@ public class AdminTagsController : Controller
             DisplayName = editTagRequest.DisplayName
         };
 
-        var existingTag = _bloggieDbContext.Tags.Find(tag.Id);
+        var existingTag = await _bloggieDbContext.Tags.FindAsync(tag.Id);
 
         if (existingTag != null)
         {
             existingTag.Name = tag.Name;
             existingTag.DisplayName = tag.DisplayName;
 
-            _bloggieDbContext.SaveChanges();
+            await _bloggieDbContext.SaveChangesAsync();
 
             return RedirectToAction("List");
         }
@@ -98,14 +99,14 @@ public class AdminTagsController : Controller
     }
 
     [HttpPost]
-    public IActionResult Delete(EditTagRequest editTagRequest)
+    public async Task<IActionResult> Delete(EditTagRequest editTagRequest)
     {
-        var tagFromDb = _bloggieDbContext.Tags.Find(editTagRequest.Id);
+        var tagFromDb = await _bloggieDbContext.Tags.FindAsync(editTagRequest.Id);
 
         if (tagFromDb != null)
         {
             _bloggieDbContext.Tags.Remove(tagFromDb);
-            _bloggieDbContext.SaveChanges();
+            await _bloggieDbContext.SaveChangesAsync();
 
             return RedirectToAction("List");
         }

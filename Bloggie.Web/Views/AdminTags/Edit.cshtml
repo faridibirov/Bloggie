@@ -7,8 +7,11 @@
 </div>
 
 <div class="container py-5">
-    <form method="post">
-        <div class="mb-3">
+
+    @if (Model != null)
+    {
+        <form method="post">
+            <div class="mb-3">
             <label class="form-lable">Id</label>
             <input type="text" id="id" class="form-control" asp-for="Id" readonly />
         </div>
@@ -27,5 +30,11 @@
             <button type="submit" class="btn btn-danger ms-2" asp-controller="AdminTags" asp-action="Delete">Delete</button>
         </div>
         </div>
-    </form>
+        </form>
+    }
+
+    else
+    {
+        <p>Tag not found!</p>
+    }
 </div>
