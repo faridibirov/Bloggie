@@ -166,4 +166,21 @@ public class AdminBlogPostsController : Controller
 
     }
 
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(EditBlogPostRequest editBlogPostRequest)
+    {
+        // Talk to repository to delete this blog post and tags
+
+        var deletedBlogPost =  await _blogPostRepository.DeleteAsync(editBlogPostRequest.Id);
+
+        if(deletedBlogPost!=null)
+        {
+            return RedirectToAction("List");
+        }
+
+        return RedirectToAction("Edit", new {id = editBlogPostRequest.Id});
+
+    }
+
 }
