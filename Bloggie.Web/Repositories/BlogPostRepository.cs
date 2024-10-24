@@ -49,6 +49,11 @@ public class BlogPostRepository : IBlogPostRepository
        return await _bloggieDbContext.BlogPosts.Include(t=>t.Tags).FirstOrDefaultAsync(b => b.Id == id);
     }
 
+    public async Task<BlogPost?> GetByUrlHandleAsync(string urlHandle)
+    {
+      return  await _bloggieDbContext.BlogPosts.Include(t=>t.Tags).FirstOrDefaultAsync(x => x.UrlHandle == urlHandle);
+    }
+
     public async Task<BlogPost?> UpdateAsync(BlogPost blogPost)
     {
         var blogfromDb = await _bloggieDbContext.BlogPosts.Include(t=>t.Tags).FirstOrDefaultAsync(b => b.Id == blogPost.Id);
