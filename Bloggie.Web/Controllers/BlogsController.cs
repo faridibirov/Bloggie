@@ -14,15 +14,18 @@ public class BlogsController : Controller
     private readonly IBlogPostLikeRepository _blogPostLikeRepository;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IBlogPostCommentRepository _blogPostCommentRepository;
 
     public BlogsController(IBlogPostRepository blogPostRepository, IBlogPostLikeRepository blogPostLikeRepository,
         SignInManager<IdentityUser> signInManager,
-        UserManager<IdentityUser> userManager)
+        UserManager<IdentityUser> userManager,
+        IBlogPostCommentRepository blogPostCommentRepository )
     {
         _blogPostRepository = blogPostRepository;
         _blogPostLikeRepository = blogPostLikeRepository;
         _signInManager = signInManager;
         _userManager = userManager;
+        _blogPostCommentRepository = blogPostCommentRepository;
     }
 
     [HttpGet]
@@ -74,5 +77,29 @@ public class BlogsController : Controller
         }
 
         return View(blogDetailsViewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Index(BlogDetailsViewModel blogDetailsViewModel)
+    {
+        if (_signInManager.IsSignedIn(User))
+        {
+            var domainmodel = new BlogPostComment
+            {
+                BlogPostId = blogDetailsViewModel.Id,
+                Description = blogDetailsViewModel.CommentDescription,
+                UserId = Guid.Parse(_userManager.GetUserId(User)),
+                DateAdded = DateTime.Now
+            };
+
+            await _blogPostCommentRepository.AddAsync(domainmodel);
+
+            return RedirectToAction("Index", "Home",
+               new {urlHandle = blogDetailsViewModel.UrlHandle} );
+        }
+
+        return View();
+       
+
     }
 }
