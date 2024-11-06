@@ -51,9 +51,13 @@ public class AdminTagsController : Controller
     
 
     [HttpGet]
-    public async Task<IActionResult> List()
+    public async Task<IActionResult> List(string? searchQuery, string? sortBy, string? sortDirection)
     {
-        var tags = await _tagRepository.GetAllAsync();
+        ViewBag.SearchQuery = searchQuery;
+        ViewBag.SortBy = sortBy;
+        ViewBag.SortDirection = sortDirection;
+       
+        var tags = await _tagRepository.GetAllAsync(searchQuery, sortBy, sortDirection);
 
         return View(tags);
     }
