@@ -1,5 +1,11 @@
 ﻿@model List<Bloggie.Web.Models.Domain.Tag>
 
+@{
+    int nextPage = Convert.ToInt32(ViewBag.PageNumber) + 1;
+    int prevPage = Convert.ToInt32(ViewBag.PageNumber) - 1;
+}
+
+
 <div class="bg-secondary bg-opacity-10 py-2">
     <div class="container">
         <h1>Show All Tags - Admin Functionality</h1>
@@ -91,6 +97,46 @@
                 }
             </tbody>
         </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link"
+                    asp-controller="AdminTags"
+                    asp-action="List"
+                    asp-route-pageNumber="@prevPage"
+                    asp-route-pageSize="@ViewBag.PageSize"
+                    asp-route-sortBy="@ViewBag.SortBy"
+                    asp-route-sortDirection="@ViewBag.SortDirection"
+                    asp-route-searchQuery="@ViewBag.SearchQuery">Previous</a>
+                </li>
+                @for (int i = 1; i <=ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                        asp-controller="AdminTags"
+                        asp-action="List" 
+                        asp-route-pageNumber="@i"
+                        asp-route-pageSize="@ViewBag.PageSize"
+                        asp-route-sortBy="@ViewBag.SortBy"
+                        asp-route-sortDirection="@ViewBag.SortDirection"
+                        asp-route-searchQuery="@ViewBag.SearchQuery">@i</a>
+                        </li>
+                }
+
+                <li class="page-item">
+                    <a class="page-link"
+                    asp-controller="AdminTags"
+                    asp-action="List"
+                    asp-route-pageNumber="@nextPage"
+                    asp-route-pageSize="@ViewBag.PageSize"
+                    asp-route-sortBy="@ViewBag.SortBy"
+                    asp-route-sortDirection="@ViewBag.SortDirection"
+                    asp-route-searchQuery="@ViewBag.SearchQuery">Next</a>
+                </li>
+            </ul>
+        </nav>
+
     }
     else
     {
